@@ -28,16 +28,13 @@ WITH target LIMIT 1 MATCH (target)-[:HAS_TAG]->(t:Tag)<-[:HAS_TAG]-(reco:Game) W
 AND reco.rating IN ['Very Positive','Overwhelmingly Positive'] WITH target, reco, count(t) AS comuni MATCH (target)-[:HAS_TAG]->(tt:Tag) 
 WITH reco, comuni, count(tt) AS tag_target MATCH (reco)-[:HAS_TAG]->(rt:Tag) WITH reco, comuni, tag_target, count(rt) AS tag_reco RETURN reco.title AS gioco, reco.rating AS voto, comuni,   round(toFloat(comuni)/(tag_target+tag_reco-comuni),3) AS jaccard ORDER BY jaccard DESC LIMIT 10;
 
-//5) 
-MATCH (a:Game)-[:HAS_TAG]->(t:Tag)<-[:HAS_TAG]-(b:Game) WHERE toLower(a.title) CONTAINS 'prince of persia: warrior'   AND toLower(b.title) CONTAINS 'the two thrones' RETURN t.name AS tag_in_comune;
-
-//6)
+//5)
 MATCH (target:Game) WHERE toLower(target.title) CONTAINS 'prince of persia: warrior' WITH target LIMIT 1 MATCH (target)-[:HAS_TAG]->(t:Tag)<-[:HAS_TAG]-(reco:Game) 
 WHERE target <> reco AND reco.date_release >= date('2015-01-01') WITH target, reco, count(t) AS comuni 
 MATCH (target)-[:HAS_TAG]->(tt:Tag) WITH reco, comuni, count(tt) AS tag_target MATCH (reco)-[:HAS_TAG]->(rt:Tag) 
 WITH reco, comuni, tag_target, count(rt) AS tag_reco RETURN reco.title AS gioco, reco.date_release AS uscita,   round(toFloat(comuni)/(tag_target+tag_reco-comuni),3) AS jaccard ORDER BY jaccard DESC LIMIT 10;
 
-//7)
+//6)
 MATCH (target:Game) WHERE toLower(target.title) CONTAINS 'prince of persia: warrior' WITH target LIMIT 1 MATCH (target)-[:HAS_TAG]->(t:Tag)<-[:HAS_TAG]-(reco:Game) 
 WHERE target <> reco WITH target, reco, collect(t.name) AS tag_condivisi, count(t) AS comuni MATCH (target)-[:HAS_TAG]->(tt:Tag) 
 WITH reco, tag_condivisi, comuni, count(tt) AS tag_target MATCH (reco)-[:HAS_TAG]->(rt:Tag) 
